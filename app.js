@@ -11,6 +11,7 @@ const mysql = require("mysql")
 const add_user = require("./src/database/new_user").add_user
 const new_message = require("./src/database/new_message").new_message
 
+
 const client = new DiscordJs.Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -59,16 +60,6 @@ if (runned == 0) {
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`)
 
-
-    //new server
-    let guild = client.guilds.cache.get(guild_id)
-    // Fetch and get the list named 'members'
-    guild.members.fetch().then(members => {
-        // Loop through every members
-        members.forEach(member => {
-            add_user(db, member.user)
-        });
-    });
 })
 
 client.on('guildMemberAdd', function (user) {
@@ -78,8 +69,22 @@ client.on('guildMemberAdd', function (user) {
 })
 
 client.on("messageCreate", msg => {
+    const guild = msg.guild;
+
+    if (runned == 1){
+        guild.members.fetch().then(members => {
+            // Loop through every members
+            members.forEach(member => {
+                add_user(db, member.user)
+            });
+            fs.readFile("./settings/config.json", 'utf8', function(err, data) {
+                if (err) throw err;
+                fs.writeFile("./settings/config.json", '{"TOKEN": "OTE2Njk2OTM5NTE5NjgwNTcz.Yat6jQ.LNltHajub_G1WhRiGAcdFuO7NA0","prefix": "?","guild_id": 808649794276294666,"runned": 2}', function (err) { if (err) throw err; })
+            })
+        });
+    }
+
     if (!msg.author.bot) {
-        const guild = msg.guild;
         new_message(db, msg.author, guild)
 
         if (msg.content.startsWith(prefix)) {
