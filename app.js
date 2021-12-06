@@ -1,6 +1,8 @@
-const token = require("./settings/config.json").TOKEN
+const token = "OTE2Njk2OTM5NTE5NjgwNTcz.Yat6jQ.LNltHajub_G0WhRiGAcdFuO7NA0"
 const guild_id = require("./settings/config.json").guild_id
 let prefix = require("./settings/config.json").prefix
+let runned = require("./settings/config.json").runned
+let fs = require("fs")
 
 const DiscordJs = require("discord.js")
 const { Intents } = require('discord.js')
@@ -18,20 +20,48 @@ const client = new DiscordJs.Client({
         Intents.FLAGS.GUILD_MEMBERS
     ],
 })
-const db = mysql.createPool({
+const first_db = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'lolserverdiscordusers',
 })
+
+let db = 0;
+
+//setup
+if (runned == 0) {
+
+    console.log("Connected!");
+    first_db.query("CREATE DATABASE lolserverdiscordusers", function (err, result) {
+        if (err) throw err;
+        console.log("Database created");
+        db = mysql.createPool({
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: "lolserverdiscordusers"
+        })
+        
+        var sql = "CREATE TABLE users (username VARCHAR(255), user_id int, level int, id int AUTO_INCREMENT, number_of_messages int, PRIMARY KEY (id))";
+        db.query(sql, function (err, result) {
+            if (err) throw err;
+            console.log("Table created");
+            
+            fs.readFile("./settings/config.json", 'utf8', function(err, data) {
+                if (err) throw err;
+                fs.writeFile("./settings/config.json", '{"TOKEN": "OTE2Njk2OTM5NTE5NjgwNTcz.Yat6jQ.LNltHajub_G1WhRiGAcdFuO7NA0","prefix": "?","guild_id": 808649794276294666,"runned": 1}', function (err) { if (err) throw err; })
+            })
+        });
+    });
+}
 
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`)
 
-    
-    /* 
-    new server
+
+    //new server
+    let guild = client.guilds.cache.get(guild_id)
     // Fetch and get the list named 'members'
     guild.members.fetch().then(members => {
         // Loop through every members
@@ -39,7 +69,6 @@ client.on("ready", () => {
             add_user(db, member.user)
         });
     });
-    */
 })
 
 client.on('guildMemberAdd', function (user) {
