@@ -56,6 +56,12 @@ if (runned == 0) {
     });
 }
 
+db = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: "lolserverdiscordusers"
+})
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`)
