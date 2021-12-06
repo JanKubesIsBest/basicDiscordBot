@@ -85,7 +85,6 @@ client.on("messageCreate", msg => {
     }
 
     if (!msg.author.bot) {
-        new_message(db, msg.author, guild)
 
         if (msg.content.startsWith(prefix)) {
             let cmd = msg.content.replace(prefix, "")
