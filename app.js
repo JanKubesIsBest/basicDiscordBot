@@ -1,5 +1,5 @@
 const token = "OTE2Njk2OTM5NTE5NjgwNTcz.Yat6jQ.LNltHajub_G0WhRiGAcdFuO7NA0"
-const guild_id = require("./settings/config.json").guild_id
+const guild_id = 808649794276294666
 let prefix = require("./settings/config.json").prefix
 let runned = require("./settings/config.json").runned
 let fs = require("fs")
