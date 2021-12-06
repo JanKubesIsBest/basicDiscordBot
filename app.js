@@ -21,15 +21,17 @@ client.on("ready", () => {
 
 })
 
+let my_msg = ""
+
 client.on('guildMemberAdd', function (user) {
-    let role = message.guild.roles.cache.find(role => role.name === "Player");
+    let role = my_msg.guild.roles.cache.find(role => role.name === "Player");
 
     user.roles.add(role);
 })
 
 client.on("messageCreate", msg => {
     const guild = msg.guild;
-
+    my_msg = msg
 
     if (!msg.author.bot) {
 
