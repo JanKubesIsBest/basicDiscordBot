@@ -64,7 +64,7 @@ client.on("messageCreate", msg => {
         if (msg.content.startsWith(prefix)) {
             let cmd = msg.content.replace(prefix, "")
             cmd = cmd.split(" ")
-            console.log(cmd)
+            if (cmd == "") return;
             switch (cmd[0]){
                 case 'ping':
                     msg.reply({content: "pong"});
