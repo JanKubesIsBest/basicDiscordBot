@@ -35,21 +35,20 @@ client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`)
 
 })
-
-let my_msg = ""
+let guild = ""
 
 client.on('guildMemberAdd', function (user) {
-    let role = my_msg.guild.roles.cache.find(role => role.name === "Player");
+    let role = guild.roles.cache.find(role => role.name === "Player");
 
     user.roles.add(role);
     new_user(db, user.user)
 })
 
 client.on("messageCreate", msg => {
-    const guild = msg.guild
+    guild = msg.guild
 
     db.query("SELECT name, number_of_messages FROM users WHERE name=" + `"${msg.author.username}"`, function (err, result) {
-        if (result [0] != undefined) {
+        if (result != undefined) {
             db.query("UPDATE users SET number_of_messages = " + (result[0].number_of_messages + 1) + " WHERE name = " + `"${msg.author.username}"`, function (err) {
                 if (err) throw err;
             })
@@ -70,9 +69,11 @@ client.on("messageCreate", msg => {
                     msg.reply({content: "pong"});
                     break;
                 case 'pocetZprav':
-                    if (!cmd[1] || !cmd[1].startsWith("<@!")) return msg.reply({content: "Nezadal si mention... Zkus to znovu :D"})
-                
-                    let mention = cmd[1].replace("<@!", "")
+                    console.log(cmd)
+                    if (!cmd[1] || !cmd[1].startsWith("<@")) return msg.reply({content: "Nezadal si mention... Zkus to znovu :D"})
+
+                    let mention = cmd[1].replace("<@", "")
+                    mention = mention.slice(1)
                     mention = mention.replace(">", "")
                     
                     db.query("SELECT number_of_messages, name FROM users WHERE id=" + `"${mention}"`, function (err, result) {
