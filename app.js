@@ -10,6 +10,9 @@ const { Intents } = require('discord.js')
 const setup = require("./settings/setup").setup
 const new_user = require("./src/database/new_user").add_user
 
+let clock_day = new Date().getDay()
+let text_channel_for_notifications
+
 const client = new DiscordJs.Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -29,6 +32,16 @@ const db = my_sql.createPool({
     user: 'root',
     password: '',
     database: 'discord_manager'
+})
+
+
+let message_counter = 0
+
+const message_counter_db = my_sql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'messages_counter'
 })
 
 client.on("ready", () => {
@@ -88,6 +101,9 @@ client.on("messageCreate", msg => {
                         }
                     })
                     break;
+                case 'set notification channel':
+                    text_channel_for_notifications = msg.channel.id
+                    break
                 default:
                     msg.reply({
                         content: "Command neexistuje."
@@ -95,7 +111,14 @@ client.on("messageCreate", msg => {
             }
         }
     }
-})
 
+    if (clock_day != new Date().getDay()){
+        let clock_day = new Date().getDay()
+
+        client.channels.cache.get(text_channel_for_notifications).send('Dnes jsme si na tomto serveru napsali: ' + message_counter + " zpravy.");
+        return message_counter_db.query("INSERT INTO daily (number_of_messages, date) VALUES (" + message_counter + ", " + `"${new Date().get() - 1}."` + ")")
+    }
+    message_counter += 1
+})
 
 client.login(token)
