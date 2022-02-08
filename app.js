@@ -101,8 +101,11 @@ client.on("messageCreate", msg => {
                         }
                     })
                     break;
-                case 'set notification channel':
+                case 'set_notification_channel':
                     text_channel_for_notifications = msg.channel.id
+                    msg.reply({
+                        content: "Channel setuped."
+                    })
                     break
                 default:
                     msg.reply({
