@@ -88,7 +88,7 @@ client.on("messageCreate", msg => {
                     let mention = cmd[1].replace("<@", "")
                     mention = mention.slice(1)
                     mention = mention.replace(">", "")
-                    
+
                     db.query("SELECT number_of_messages, name FROM users WHERE id=" + `"${mention}"`, function (err, result) {
                         if (!result[0]){
                             msg.reply({
@@ -116,10 +116,10 @@ client.on("messageCreate", msg => {
     }
 
     if (clock_day != new Date().getDay()){
-        let clock_day = new Date().getDay()
+        clock_day = new Date().getDay()
 
-        client.channels.cache.get(text_channel_for_notifications).send('Dnes jsme si na tomto serveru napsali: ' + message_counter + " zpravy.");
-        return message_counter_db.query("INSERT INTO daily (number_of_messages, date) VALUES (" + message_counter + ", " + `"${new Date().get() - 1}."` + ")")
+        client.channels.cache.get(text_channel_for_notifications).send('Dnes (' + (new Date().getDate() - 1) + "." + (new Date().getMonth() + 1) + ') jsme si na tomto serveru napsali: ' + message_counter + " zpravy.");
+        message_counter_db.query("INSERT INTO daily (number_of_messages, date) VALUES (" + message_counter + ", " + `"${(new Date().getDate() - 1) + "." + (new Date().getMonth() + 1)}."` + ")")
     }
     message_counter += 1
 })
