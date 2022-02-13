@@ -116,6 +116,13 @@ client.on("messageCreate", msg => {
     }
 
     if (clock_day != new Date().getDay()){
+        let days_from_last_notification = new Date().getDay() - clock_day + 1
+        for (let i = 0; i < days_from_last_notification; i++){
+            client.channels.cache.get(text_channel_for_notifications).send('Dnes (' + (new Date().getDate() - i) + "." + (new Date().getMonth() + 1) + ') jsme si na tomto serveru napsali: ' + message_counter + " zpravy.");
+            message_counter_db.query("INSERT INTO daily (number_of_messages, date) VALUES (" + message_counter + ", " + `"${(new Date().getDate() - 1) + "." + (new Date().getMonth() + 1)}."` + ")")
+            message_counter = 0;
+        }
+        
         clock_day = new Date().getDay()
 
         client.channels.cache.get(text_channel_for_notifications).send('Dnes (' + (new Date().getDate() - 1) + "." + (new Date().getMonth() + 1) + ') jsme si na tomto serveru napsali: ' + message_counter + " zpravy.");
